@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * @file
+ * Sample AJAX functionality so people can see some of the CTools AJAX
+ * features in use.
+ */
+
+ //--------------
+ // Drupal hooks.
+
+ /**
+  * Implements hook_menu().
+  */
+function ctools_ajax_sample_menu() {
+  $items['ctools_ajax_sample'] = array(
+    'title'           => 'Chaos Tools AJAX Demo',
+    'page callback'   => 'ctools_ajax_sample_page',
+    'access callback' => TRUE,
+    'type'            => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+
+/**
+ * Page callback to display links and render a container for AJAX stuff.
+ */
+function ctools_ajax_sample_page() {
+  global $user;
+
+  // Include the CTools tools that we need.
+  ctools_include('ajax');
+  ctools_include('modal');
+
+  // Add CTools' javascript to the page.
+  ctools_modal_add_js();
+
+  // Create our own JavaScript that will be used to theme a modal.
+
+}
