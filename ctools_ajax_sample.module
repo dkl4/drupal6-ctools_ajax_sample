@@ -28,6 +28,14 @@ function ctools_ajax_sample_menu() {
     'type'            => MENU_CALLBACK,
   );
 
+  $items['ctools_ajax_sample/%ctools_js/tablenix/%'] = array(
+    'title'           => 'Hello World Title from TableNix hook_menu',
+    'page callback'   => 'ctools_ajax_sample_tablenix',
+    'page arguments'  => array(1,3),
+    'access callback' => TRUE ,
+    'type'            => MENU_CALLBACK,
+  );
+
   // I know %node invokes some auto-loading magic, but not sure what %ctools_js does in JS context
   // %ctools_js seems to be something which intelligently either routes to the nojs path or
   // tells you you're in a JS-enabled browser.
@@ -161,6 +169,27 @@ function ctools_ajax_sample_hello($js = NULL) {
     return $output;
   }
 }
+
+/**
+ * Nix a row from a table and restripe.
+ */
+function ctools_ajax_sample_tablenix($js, $row) {
+  if (!$js) {
+    // We don't support degrading this from js because we're not
+    // using the server to remember the state of the table.
+    return MENU_ACCESS_DENIED;
+  }
+  ctools_include('ajax');
+
+  $commands = array();
+  $commands[] = ctools_ajax_command_remove("tr.ajax-sample-row-$row");
+  $commands[] = ctools_ajax_command_restripe('table.ajax-sample-table');
+  ctools_ajax_render($commands);
+}
+
+
+
+
 
 
 /**
