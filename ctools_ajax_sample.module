@@ -126,6 +126,22 @@ function ctools_ajax_sample_page() {
   // Default function theme_ctools_ajax_sample_container($content) defined below
   $output .= theme('ctools_ajax_sample_container', '<h3>' . t('Initial Content in div id=ctools-sample') . '</h3>');
 
+  // Create a table that we can have data removed via AJAX.
+  $header = array(t('Row'), t('Content'), t('Actions'));
+  $rows = array();
+  for($i = 1; $i < 11; $i++) {
+    $rows[] = array(
+      'class' => 'ajax-sample-row-' . $i,
+      'data'  => array(
+        $i,
+        md5($i),
+        ctools_ajax_text_button('remove', "ctools_ajax_sample/nojs/tablenix/$i", t('Delete this row')),
+      ),
+    );
+  }
+
+  $output .= theme('table', $header, $rows, array('class' => 'ajax-sample-table'));
+
   return $output;
 
 }
