@@ -41,6 +41,20 @@ function ctools_ajax_sample_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_theme().
+ *
+ * Render some basic output for this module.
+ */
+function ctools_ajax_sample_theme() {
+  return array(
+    // Sample theme function
+    'ctools_ajax_sample_container' => array(
+      'arguments' => array('content' => NULL),
+    ),
+  );
+}
+
 
 /**
  * Page callback to display links and render a container for AJAX stuff.
@@ -151,4 +165,17 @@ function ctools_ajax_sample_login_success($js, $action) {
     $commands[] = ctools_ajax_command_redirect('user');
   }
   ctools_ajax_render($commands);
+}
+
+// --------------------------------------------------------------------------
+// Themes
+
+/**
+ * Theme function for main rendered output.
+ */
+function theme_ctools_ajax_sample_container($content) {
+  $output  = '<div id="ctools-sample">';
+  $output .= $content;
+  $output .= '</div>';
+  return $output;
 }
