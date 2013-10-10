@@ -29,6 +29,8 @@ function ctools_ajax_sample_menu() {
   );
 
   // I know %node invokes some auto-loading magic, but not sure what %ctools_js does in JS context
+  // %ctools_js seems to be something which intelligently either routes to the nojs path or
+  // tells you you're in a JS-enabled browser.
   $items['ctools_ajax_sample/%ctools_js/login'] = array(
     'title' => 'Login',
     'page callback'   => 'ctools_ajax_sample_login',
