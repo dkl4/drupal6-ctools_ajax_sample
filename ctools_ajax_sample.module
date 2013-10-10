@@ -20,6 +20,14 @@ function ctools_ajax_sample_menu() {
     'type'            => MENU_NORMAL_ITEM,
   );
 
+  $items['ctools_ajax_sample/%ctools_js/hello'] = array(
+    'title'           => 'Hello World Title from hook_menu',
+    'page callback'   => 'ctools_ajax_sample_hello',
+    'page arguments'  => array(1),    // maps to %ctools_js which means... ??
+    'access callback' => TRUE,
+    'type'            => MENU_CALLBACK,
+  );
+
   // I know %node invokes some auto-loading magic, but not sure what %ctools_js does in JS context
   $items['ctools_ajax_sample/%ctools_js/login'] = array(
     'title' => 'Login',
@@ -109,10 +117,31 @@ function ctools_ajax_sample_page() {
                'ctools_ajax_sample/nojs/login', t('Login via modal'), 'ctools-modal-ctools-sample-style');
   }
 
+  $links[] = ctools_ajax_text_button(t('Hello world nojs'), "ctools_ajax_sample/nojs/hello", t('Replace text with "hello world"'));
+
   $output = theme('item_list', $links, t('Actions'));
+
+  // Default function theme_ctools_ajax_sample_container($content) defined below
+  $output .= theme('ctools_ajax_sample_container', '<h3>' . t('Initial Content in div id=ctools-sample') . '</h3>');
 
   return $output;
 
+}
+
+/**
+ * Returns a "take it all over" hello world stype request.
+ */
+function ctools_ajax_sample_hello($js = NULL) {
+  $output = '<h1>' . t('Hello World from ctools_ajax_sample_hello() callback') . '</h1>';
+  if ($js) {
+    ctools_include('ajax');
+    $commands = array();
+    $commands[] = ctools_ajax_command_html('#ctools-sample', $output);
+    ctools_ajax_render($commands);  // this function exits.
+  }
+  else {
+    return $output;
+  }
 }
 
 
