@@ -38,5 +38,28 @@ function ctools_ajax_sample_page() {
   ctools_modal_add_js();
 
   // Create our own JavaScript that will be used to theme a modal.
+  $sample_style = array(
+    'ctools-sample-style' => array(
+      'modalSize' => array(
+        'type'      => 'fixed',
+        'width'     => 500,
+        'height'    => 300,
+        'addWidth'  => 20,
+        'addHeight' => 15,
+      ),
+      'modalOptions' => array(
+        'opacity' => .5,
+        'background-color' => '#000',
+      ),
+      'animation' => 'fadeIn',
+      'modalTheme' => 'CToolsSampleModal',
+      'throbber' => theme('image', ctools_image_path('ajax-loader-gif', 'ctools_ajax_sample'), t('Loading...'), t('Loading')),
+    ),
+  );
+
+  drupal_add_js($sample_style, 'setting');
+
+  $output = 'Hello from ctools_ajax_sample_page.';
+  return $output;
 
 }
