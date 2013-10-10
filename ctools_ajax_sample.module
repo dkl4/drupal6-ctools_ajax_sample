@@ -20,6 +20,15 @@ function ctools_ajax_sample_menu() {
     'type'            => MENU_NORMAL_ITEM,
   );
 
+  // I know %node invokes some auto-loading magic, but not sure what %ctools_js does in JS context
+  $items['ctools_ajax_sample/%ctools_js/login'] = array(
+    'title' => 'Login',
+    'page callback'   => 'ctools_ajax_sample_login',
+    'page arguments'  => array(1),      // %ctools_js above in menu path
+    'access callback' => TRUE,
+    'type'            => MENU_CALLBACK,
+  );
+
   return $items;
 }
 
@@ -81,4 +90,34 @@ function ctools_ajax_sample_page() {
 
   return $output;
 
+}
+
+
+/**
+ * A modal login callback.
+ * This is the menu callback defined by $items['ctools_ajax_sample/%ctools_js/login'] in $items in hook_menu above.
+ */
+function ctools_ajax_sample_login($js = NULL) {
+  // Fall back if $js is not set.
+  if (!$js) {
+    return drupal_get_form('user_login');
+  }
+
+  ctools_include('modal');
+  ctools_include('ajax');
+  $form_state = array(
+    'title'  => t('Login'),
+    'ajax'   => TRUE,
+  );
+  // Note we wrap Drupal's user-login form, so we get all that with no extra work.
+  $output = ctools_modal_form_wrapper('user_login', $form_state);
+  if (empty($output)) {
+    // empty $output signifies success, so we'll use it as our $commands
+    // array
+    $output = array();
+    $inplace = ctools_ajax_text_button(t('remain here'),  'ctools_ajax_sample/nojs/login/inplace', t('Go to your account'));
+    $account = ctools_ajax_text_button(t('your account'), 'ctools_ajax_sample/nojs/login/user', t('Go to your account'));
+    $output[] = ctools_modal_command_display(t('Login Success'), '<div class="modal-message">Login successful. You can now choose whether to ' . $inplace . ', or go to ' . $account . '</div>');
+  }
+  ctools_ajax_render($output);
 }
