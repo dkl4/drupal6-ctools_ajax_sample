@@ -118,7 +118,7 @@ function ctools_ajax_sample_page() {
   // Create a list of clickable links.
   $links = array();
 
-  // Only show login links to the anonymous user.
+  // Only show LOGIN links to the anonymous user who's not logged in yet.
   if ($user->uid == 0) {
     $links[] = ctools_modal_text_button(t('Modal Login (default style)'),
                'ctools_ajax_sample/nojs/login', t('Login via modal'));
