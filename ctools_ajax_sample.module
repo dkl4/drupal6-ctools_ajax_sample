@@ -47,6 +47,14 @@ function ctools_ajax_sample_menu() {
     'type'            => MENU_CALLBACK,
   );
 
+  $items['ctools_ajax_sample/%ctools_js/animal'] = array(
+    'title'           => 'Animal Form Wizard hook_menu title',
+    'page callback'   => 'ctools_ajax_sample_animal',
+    'page arguments'  => array(1),    // arg to pass to above callback is $ctools_js
+    'access callback' => TRUE,
+    'type'            => MENU_CALLBACK,
+  );
+
 
   $items['ctools_ajax_sample/%ctools_js/login/%'] = array(
     'title'           => 'Post-Login Action',
@@ -126,6 +134,12 @@ function ctools_ajax_sample_page() {
     $links[] = ctools_modal_text_button(t('Modal Login (custom style)'),
                'ctools_ajax_sample/nojs/login', t('Login via modal'), 'ctools-modal-ctools-sample-style');
   }
+
+  // Present three ways to do our animal picking wizard.
+  $links[] = l(t('Wizard (no modal)'), 'ctools_ajax_sample/nojs/animal');
+  $links[] = ctools_modal_text_button(t('Wizard (default modal)'), 'ctools_ajax_sample/nojs/animal', t('Pick an animal'));
+  $links[] = ctools_modal_text_button(t('Wizard (custom modal)'),  'ctools_ajax_sample/nojs/animal', t('Pick an animal'), 'ctools-modal-ctools-sample-style');
+
 
   $links[] = ctools_ajax_text_button(t('Hello world nojs'), "ctools_ajax_sample/nojs/hello", t('Replace text with "hello world"'));
 
@@ -241,6 +255,41 @@ function ctools_ajax_sample_login_success($js, $action) {
     $commands[] = ctools_ajax_command_redirect('user');
   }
   ctools_ajax_render($commands);
+}
+
+/**
+ * A wizard callback.
+ */
+function ctools_ajax_sample_animal($js = NULL, $step = NULL) {
+  if ($js) {
+    ctools_include('modal');
+    ctools_include('ajax');
+  }
+
+  $form_info = array(
+    'id'              => 'animals',
+    'path'            => 'ctools_ajax_sample' . ($js ? 'ajax' : 'nojs') . '/animal/%step',
+    'show trail'      => TRUE,
+    'show back'       => TRUE,
+    'show cancel'     => TRUE,
+    'show return'     => FALSE,
+    'next callback'   => 'ctools_ajax_sample_wizard_next',
+    'finish callback' => 'ctools_ajax_sample_wizard_finish',
+    'cancel callback' => 'ctools_ajax_sample_wizard_cancel',
+    // this controls order, as well as form labels
+    'order' => array(
+      'start' => t('Choose animal'),
+    ),
+    // here we map a step to a form id.
+    'forms' => array(
+      // e.g., this for the step at wombat/create
+      'start' => array(
+        'form id' => 'ctools_ajax_sample_start'
+      ),
+    ),
+  );
+
+
 }
 
 // --------------------------------------------------------------------------
